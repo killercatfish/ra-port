@@ -63,6 +63,13 @@ xcrun devicectl device process launch --device 00008150-000C51023A10C01C com.kil
 - Team MTXB24VFYK is Josh's free personal team, so the install expires after 7 days. Rebuild and reinstall to renew it.
 - The phone must stay unlocked during install. Upstream's `com.raport.redalert` can't be registered by our team, hence the bundle ID override.
 
+### Versions
+- The displayed version is `RA95_IOS_VERSION` (major.minor, set by hand in `ios/CMakeLists.txt`, now
+  0.1) plus the build number, the branch's commit count, e.g. 0.1.70. Release from `josh/main` so the
+  number only goes up. `RAGitCommit` in Info.plist records the exact commit.
+- RA95_IOS_VERSION is a CMake cache variable: after changing its default, delete
+  `ios/build-device/CMakeCache.txt` (or pass `-DRA95_IOS_VERSION=...`), or the old value sticks.
+
 ### SideStore (no Mac needed for the weekly refresh, set up 2026-10-27)
 - Josh's iPhone runs the SideStore copy (`com.killercatfish.redalert.MTXB24VFYK`, re-signed by SideStore).
   Weekly: connect LocalDevVPN (it replaces Tailscale/ExpressVPN, since iOS allows one VPN at a time),
