@@ -67,7 +67,9 @@ xcrun devicectl device process launch --device 00008150-000C51023A10C01C com.kil
 - Josh's iPhone runs the SideStore copy (`com.killercatfish.redalert.MTXB24VFYK`, re-signed by SideStore).
   Weekly: connect LocalDevVPN (it replaces Tailscale/ExpressVPN, since iOS allows one VPN at a time),
   open SideStore → My Apps → Refresh All, then switch the VPN back.
-- New build to the phone: build with `--device` as above, run `scripts/package_ios_ipa.sh`, then
+- New build to the devices: build with `--device` as above, run `scripts/package_ios_ipa.sh`, then
+  `scripts/send_ipa_to_sidestore.sh --devices N` (Josh runs it; it serves N devices at once and stops
+  after N complete downloads; a cut-off download, e.g. the screen locked, does not count). Older notes:
   get `ios/build-device/RedAlert.ipa` into SideStore. AirDrop didn't show up in SideStore's picker;
   what worked was Josh serving the folder himself (`python3 -m http.server 8642 --bind <mac LAN IP>`)
   and opening `sidestore://install?url=http://<mac LAN IP>:8642/RedAlert.ipa` in Safari on the
