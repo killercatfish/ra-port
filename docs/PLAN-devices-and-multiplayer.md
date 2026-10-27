@@ -1,6 +1,6 @@
 # Plan: Red Alert on the family's devices, then iPhone/iPad multiplayer
 
-*Written 2026-10-27 by Claude at Josh's request. Status: step 1 in progress, the rest not started.*
+*Written 2026-10-27 by Claude at Josh's request. Status: step 1 done on Josh's iPhone (2026-10-27); iPad and son's phone next; the rest not started.*
 
 ## Goal
 Red Alert on Josh's iPhone, his son's iPhone and the family iPad, without re-signing in Xcode

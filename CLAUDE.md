@@ -62,6 +62,21 @@ xcrun devicectl device process launch --device 00008150-000C51023A10C01C com.kil
 ```
 - Team MTXB24VFYK is Josh's free personal team, so the install expires after 7 days. Rebuild and reinstall to renew it.
 - The phone must stay unlocked during install. Upstream's `com.raport.redalert` can't be registered by our team, hence the bundle ID override.
+
+### SideStore (no Mac needed for the weekly refresh, set up 2026-10-27)
+- Josh's iPhone runs the SideStore copy (`com.killercatfish.redalert.MTXB24VFYK`, re-signed by SideStore).
+  Weekly: connect LocalDevVPN (it replaces Tailscale/ExpressVPN, since iOS allows one VPN at a time),
+  open SideStore → My Apps → Refresh All, then switch the VPN back.
+- New build to the phone: build with `--device` as above, run `scripts/package_ios_ipa.sh`, then
+  get `ios/build-device/RedAlert.ipa` into SideStore. AirDrop didn't show up in SideStore's picker;
+  what worked was Josh serving the folder himself (`python3 -m http.server 8642 --bind <mac LAN IP>`)
+  and opening `sidestore://install?url=http://<mac LAN IP>:8642/RedAlert.ipa` in Safari on the
+  phone. Stop the server right after: it shares the game data on the LAN. (Claude's own attempt
+  to start the server was blocked by the permission check for exposing local services.)
+- SideStore setup gotchas we hit: sign-in error -80045 → turn off On-Device Anisette and switch the
+  anisette server; "not provisioned for this server (-45061)" → Reset adi.pb; "could not
+  determine this device's UDID" → LocalDevVPN connected, reset and re-place the pairing file with
+  iloader (Delete Stored Pairing, then Manage Pairing File).
 - Logs: `xcrun simctl spawn booted log show --last 2m --predicate 'process == "redalert_ios"' --style compact`.
 - iOS-specific code lives in `PORT/IOS/src/` and `ios/` (CMake target, `Info.plist.in`).
 - The iOS 27 SDK requires the UIScene life cycle and SDL2 has none. `ios_app_delegate.m` gives SDL's
