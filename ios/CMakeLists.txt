@@ -22,7 +22,7 @@ set(SDL_INSTALL OFF CACHE BOOL "" FORCE)
 set(SDL2_DISABLE_INSTALL ON CACHE BOOL "" FORCE)
 
 set(RA95_IOS_BUNDLE_ID "com.raport.redalert" CACHE STRING "iOS bundle identifier; device builds need one your Apple team can register.")
-set(RA95_IOS_VERSION "0.1.0" CACHE STRING "App version shown to users (CFBundleShortVersionString); bump by hand for releases.")
+set(RA95_IOS_VERSION "0.1" CACHE STRING "App version, major.minor (bump by hand); the build number is appended to make the version users see, e.g. 0.1.70. A full major.minor.patch value is used as is.")
 
 # The build number (CFBundleVersion) must grow with every build iOS and sideloading tools see as
 # an update. Use the number of commits on the current branch, so each new commit builds a higher
@@ -62,7 +62,12 @@ if(NOT DEFINED RA95_IOS_BUILD_NUMBER)
         set(RA95_IOS_BUILD_NUMBER "1")
     endif()
 endif()
-message(STATUS "Red Alert iOS version ${RA95_IOS_VERSION} (${RA95_IOS_BUILD_NUMBER}), commit ${RA95_GIT_COMMIT}")
+if(RA95_IOS_VERSION MATCHES "^[0-9]+\\.[0-9]+$")
+    set(RA95_IOS_DISPLAY_VERSION "${RA95_IOS_VERSION}.${RA95_IOS_BUILD_NUMBER}")
+else()
+    set(RA95_IOS_DISPLAY_VERSION "${RA95_IOS_VERSION}")
+endif()
+message(STATUS "Red Alert iOS version ${RA95_IOS_DISPLAY_VERSION} (build ${RA95_IOS_BUILD_NUMBER}), commit ${RA95_GIT_COMMIT}")
 
 set(RA95_IOS_BUNDLED_ASSETS_DIR "${CMAKE_CURRENT_LIST_DIR}/../assets/redalert" CACHE PATH "Local Red Alert assets to bundle into the iOS debug app.")
 

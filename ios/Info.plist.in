@@ -17,7 +17,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>${RA95_IOS_VERSION}</string>
+	<string>${RA95_IOS_DISPLAY_VERSION}</string>
 	<key>CFBundleVersion</key>
 	<string>${RA95_IOS_BUILD_NUMBER}</string>
 	<key>RAGitCommit</key>
