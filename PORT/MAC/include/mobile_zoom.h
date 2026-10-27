@@ -24,7 +24,7 @@ struct MobileZoomRect {
 
 /*
  * The last known position of up to two fingers, in window pixels, plus what
- * is needed to recognise a quick two- or three-finger tap.
+ * is needed to recognise quick multi-finger taps and two-finger double taps.
  */
 struct MobilePinchState {
 	int active[2];
@@ -36,12 +36,15 @@ struct MobilePinchState {
 	float pair_travel;
 	int down_count;
 	int max_down;
+	int had_tap;
+	unsigned long last_tap_tick;
 };
 
 static const float MobileZoom_MaxScale = 3.0f;
 static const float MobileZoom_SnapScale = 1.05f;
 static const unsigned long MobilePinch_TapMs = 300;
 static const float MobilePinch_TapTravel = 20.0f;
+static const unsigned long MobilePinch_DoubleTapMs = 450;
 
 static inline float MobileZoom_ClampFloat(float value, float min_value, float max_value)
 {
@@ -211,6 +214,8 @@ static inline void MobilePinch_Init(MobilePinchState *pinch)
 	pinch->pair_travel = 0.0f;
 	pinch->down_count = 0;
 	pinch->max_down = 0;
+	pinch->had_tap = 0;
+	pinch->last_tap_tick = 0;
 }
 
 static inline int MobilePinch_Slot(MobilePinchState const *pinch, long long finger)
@@ -269,6 +274,25 @@ static inline int MobilePinch_EndTapFingers(MobilePinchState *pinch, unsigned lo
 		return 0;
 	}
 	return pinch->max_down >= 3 ? 3 : 2;
+}
+
+/*
+ * Call for each recognised multi-finger tap. Returns 1 when it follows the
+ * previous one closely enough to form a double tap (and then starts over, so a
+ * third tap begins a new pair).
+ */
+static inline int MobilePinch_RecordTap(MobilePinchState *pinch, unsigned long tick)
+{
+	if (!pinch) {
+		return 0;
+	}
+	if (pinch->had_tap && (unsigned long)(tick - pinch->last_tap_tick) <= MobilePinch_DoubleTapMs) {
+		pinch->had_tap = 0;
+		return 1;
+	}
+	pinch->had_tap = 1;
+	pinch->last_tap_tick = tick;
+	return 0;
 }
 
 static inline void MobilePinch_Up(MobilePinchState *pinch, long long finger)

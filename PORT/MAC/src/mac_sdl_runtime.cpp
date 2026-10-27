@@ -754,11 +754,15 @@ static void mac_sdl_pump_events(bool allow_idle_delay)
 				int x = 0;
 				int y = 0;
 				if (MobilePinch_BothActive(&MobilePinch)) {
-					int tap_fingers = MobilePinch_EndTapFingers(&MobilePinch, mac_now_ms());
-					if (tap_fingers == 3) {
-						/* A quick three-finger tap shows the whole frame again. */
+					unsigned long now = mac_now_ms();
+					int tap_fingers = MobilePinch_EndTapFingers(&MobilePinch, now);
+					if (tap_fingers && MobilePinch_RecordTap(&MobilePinch, now)) {
+						/*
+						 * A two-finger double tap shows the whole frame again. (iOS
+						 * claims three-finger taps for its own undo/copy bar.)
+						 */
 						MobileZoom_Init(&MobileZoom);
-					} else if (tap_fingers == 2 && MobileTouch.primary_active) {
+					} else if (tap_fingers && MobileTouch.primary_active) {
 						/* A quick two-finger tap is a right click, which deselects units. */
 						MobileTouchGestureOutput out;
 						MobileTouchGesture_ClearOutput(&out);

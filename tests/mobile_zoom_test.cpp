@@ -184,8 +184,23 @@ static void test_slow_or_moving_pair_is_not_a_tap(void)
 	assert(MobilePinch_EndTapFingers(&pinch, 1100) == 0);
 }
 
+static void test_two_finger_double_tap(void)
+{
+	MobilePinchState pinch;
+	MobilePinch_Init(&pinch);
+	assert(!MobilePinch_RecordTap(&pinch, 1000));
+	assert(MobilePinch_RecordTap(&pinch, 1000 + MobilePinch_DoubleTapMs));
+	/* A third tap starts a new pair instead of completing another double tap. */
+	assert(!MobilePinch_RecordTap(&pinch, 1100 + MobilePinch_DoubleTapMs));
+
+	MobilePinch_Init(&pinch);
+	assert(!MobilePinch_RecordTap(&pinch, 1000));
+	assert(!MobilePinch_RecordTap(&pinch, 1001 + MobilePinch_DoubleTapMs));
+}
+
 int main(void)
 {
+	test_two_finger_double_tap();
 	test_quick_still_two_finger_tap_is_recognised();
 	test_three_finger_tap_is_counted();
 	test_slow_or_moving_pair_is_not_a_tap();
