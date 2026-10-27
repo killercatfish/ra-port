@@ -63,3 +63,6 @@ docs/superpowers/
 
 # Local status screenshots contain game art; never commit them.
 docs/status/
+
+# Sideloadable app packages bundle game data.
+*.ipa
