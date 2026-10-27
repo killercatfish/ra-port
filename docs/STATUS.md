@@ -1,6 +1,6 @@
 # ra-port setup status (2026-10-27)
 
-Fork: https://github.com/killercatfish/ra-port · branch `josh/setup` (4 commits, **not pushed**)
+Fork: https://github.com/killercatfish/ra-port · branch `josh/setup` (**not pushed**)
 Decisions and reasons: `docs/DECISIONS.md`. How to work in the repo: `CLAUDE.md`.
 
 ## What works
@@ -16,7 +16,7 @@ Decisions and reasons: `docs/DECISIONS.md`. How to work in the repo: `CLAUDE.md`
 | ✅ | iOS simulator app | Builds with Xcode 27.1 after 2 small fixes (below) |
 | ✅ | iOS simulator run | Reaches the main menu on iPad Pro 13-inch (M5) and iPhone 17, iOS 27.0, with audio |
 | ❌ | iOS skirmish | Not tested: needs touch input |
-| ❌ | iOS device build | Not attempted: needs your Apple team ID (steps below) |
+| ✅ | iOS device build | Signed with team MTXB24VFYK, installed on Josh's iPhone 17, and it runs (Josh confirmed 2026-10-27) |
 | ⏸ | Android APK | Dropped at your request. Toolchain installed; build stopped partway, no APK |
 | ✅ | Linux CI | Upstream already has `.github/workflows/linux-build.yml` (build + tests, no data) and `macos-build.yml`; nothing added |
 
@@ -28,6 +28,9 @@ Decisions and reasons: `docs/DECISIONS.md`. How to work in the repo: `CLAUDE.md`
    support. A small scene delegate plus a hook on `-[UIWindow makeKeyAndVisible]` attaches SDL's
    windows to the app's scene. SDL is unchanged. Both fixes are worth offering upstream later.
 3. `.gitignore`: added `docs/status/`, because screenshots contain game art.
+
+4. `scripts/build_ios_debug.sh`: device builds pass `-allowProvisioningUpdates`, so Xcode can create the first signing profile.
+5. `ios/CMakeLists.txt` + `ios/Info.plist.in`: the bundle ID is the `RA95_IOS_BUNDLE_ID` build option (default unchanged); upstream's ID is registered to another team.
 
 No desktop or game code (`CODE/`, `PORT/MAC`) was changed.
 
@@ -79,3 +82,9 @@ elsewhere. It has no Eagle board card yet.
 - macOS binary: `build/redalert_mac`
 - iOS simulator app: `ios/build-simulator/Debug-iphonesimulator/redalert_ios.app`
 - Game data: `assets/redalert/{allies,soviet}`; source zips, ISOs and extracted discs in `assets/freeware-download/`
+
+## Update: on the iPhone (2026-10-27)
+Done: built, paired, installed and trusted, and the game runs on the phone. To rebuild and reinstall
+(e.g. when the 7-day free-account install expires), see "Josh's iPhone" in `CLAUDE.md`.
+Possible next feature: pinch to magnify part of the 640x400 frame. It would live in the port's
+display and touch code, not the game code. Not started.
