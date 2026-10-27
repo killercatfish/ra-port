@@ -51,8 +51,17 @@ export PATH=/opt/homebrew/bin:$PATH DEVELOPER_DIR=/Applications/Xcode.app/Conten
 scripts/build_ios_debug.sh                                   # simulator app
 scripts/run_ios_simulator.sh --no-build --device "iPhone 17" # install + launch
 xcrun simctl io booted screenshot docs/status/ios.png         # check it (saved sideways)
-RA_IOS_DEVELOPMENT_TEAM=<TEAMID> scripts/build_ios_debug.sh --device   # signed device build
 ```
+
+### Josh's iPhone (iPhone 17, first installed 2026-10-27)
+```sh
+export PATH=/opt/homebrew/bin:$PATH DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer
+RA_IOS_DEVELOPMENT_TEAM=MTXB24VFYK scripts/build_ios_debug.sh --device -- -DRA95_IOS_BUNDLE_ID=com.killercatfish.redalert
+xcrun devicectl device install app --device 00008150-000C51023A10C01C ios/build-device/Debug-iphoneos/redalert_ios.app
+xcrun devicectl device process launch --device 00008150-000C51023A10C01C com.killercatfish.redalert
+```
+- Team MTXB24VFYK is Josh's free personal team, so the install expires after 7 days. Rebuild and reinstall to renew it.
+- The phone must stay unlocked during install. Upstream's `com.raport.redalert` can't be registered by our team, hence the bundle ID override.
 - Logs: `xcrun simctl spawn booted log show --last 2m --predicate 'process == "redalert_ios"' --style compact`.
 - iOS-specific code lives in `PORT/IOS/src/` and `ios/` (CMake target, `Info.plist.in`).
 - The iOS 27 SDK requires the UIScene life cycle and SDL2 has none. `ios_app_delegate.m` gives SDL's
